@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-// import navigation from '../components/ui/header/navigation/navigationSlice';
-// import modal from '../components/ui/modal/ModalSlice';
+import form from '../../shared/formToCreateChat/FormToCreateChatSlice.ts'
+import register from '../../shared/formToRegister/FormToRegisterSlice.ts'
 
 const stringMiddleWare = () => (next) => (action) => {
 	if (typeof action ===   'string') {
@@ -13,7 +13,7 @@ const stringMiddleWare = () => (next) => (action) => {
 };
 
 const store = configureStore({
-	reducer: {},
+	reducer: { form, register },
 	middleware: (getDefaultMiddleWare) => getDefaultMiddleWare().concat(stringMiddleWare),
 });
 
