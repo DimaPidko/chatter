@@ -1,34 +1,46 @@
 import express from 'express'
-import bodyParser from 'body-parser'
-import fs from 'fs'
+import cors from 'cors'
+import mysql from 'mysql2'
+
 
 const app = express();
-const PORT = 5174;
+const PORT = 3307;
 
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(cors());
 
-app.put('./users.json', (req, res) => {
-	const newUser = req.body;
-	
-	// Читаем текущих пользователей из файла
-	fs.readFile('./users.json', 'utf8', (err, data) => {
-		if (err) {
-			return res.status(500).json({ error: 'Ошибка чтения файла' });
-		}
+const connection = mysql.createConnection({
+	host: 'localhost',
+	user: 'root',
+	password: 'admin',
+	database: 'chatter',
+	port: PORT
+})
+
+app.post('/chatter', (req, res) => {
+	try {
+		const { userName, userPassword } = req.body
 		
-		const users = data ? JSON.parse(data) : [];
-		users.push(newUser);
-		
-		// Записываем обновленный массив пользователей обратно в файл
-		fs.writeFile('./users.json', JSON.stringify(users, null, 2), (err) => {
-			if (err) {
-				return res.status(500).json({ error: 'Ошибка записи в файл' });
+		connection.query('INSERT INTO users (user_name, password) VALUES (?, ?)', [userName, userPassword], (error) => {
+			if (error) {
+				res.status(500).send(`Error: ${error.message}`)
+			} else {
+				res.status(200).send('User created!')
 			}
-			res.json(newUser);
-		});
-	});
-});
+		})
+	} catch (error) {
+		res.status(500).send(`Error: ${error.message}`)
+	}
+})
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+connection.connect((error) => {
+	if (error) {
+		console.log(`Error: ${error.message}`)
+	} else {
+		console.log('Connection to database success')
+	}
+})
