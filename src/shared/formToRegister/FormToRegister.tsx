@@ -11,26 +11,20 @@ const FormToRegister: React.FC = () => {
 		e.preventDefault();
 		
 		const data = {
-			id: Math.floor(Math.random() * 1000),
 			userName,
 			userPassword,
 		};
 		
 		try {
-			const response = await fetch('users.json', {
-				method: "PUT",
+			const response = await fetch('http://localhost:3307/chatter', {
+				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(data)
+				body: JSON.stringify(data),
 			});
 			
 			if (!response.ok) {
 				throw new Error(`Error: ${response.statusText}`);
 			}
-			
-			const resultText = await response.text();
-			const result = resultText ? JSON.parse(resultText) : {};
-			
-			console.log('Success:', result);
 		} catch (error) {
 			console.error('Error:', error);
 		}
