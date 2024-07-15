@@ -16,7 +16,7 @@ const FormToRegister: React.FC = () => {
 		};
 		
 		try {
-			const response = await fetch('http://localhost:3307/chatter', {
+			const response = await fetch('http://localhost:3307/register', {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),
@@ -38,7 +38,7 @@ const FormToRegister: React.FC = () => {
 				<button>Create user</button>
 			</form>
 			<div>
-				<Link to={"/login"}>LogIn</Link>
+				<Link to={"/"}>LogIn</Link>
 			</div>
 		</>
 	

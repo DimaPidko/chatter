@@ -1,12 +1,10 @@
-import FormToRegister from '../shared/formToRegister/FormToRegister.tsx'
-import CreateChat from './createChat/CreateChat.tsx'
+import Login from './login/Login.tsx'
 
 const App = () => {
 
   return (
     <>
-      <CreateChat />
-      <FormToRegister />
+      <Login />
     </>
   )
 }
