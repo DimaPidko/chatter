@@ -1,10 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
 const FormToLogin : React.FC = () => {
 	const [userName, setUserName] = useState<string>('')
 	const [userPassword, setPassword] = useState<string>('')
+	const navigate = useNavigate()
 	
 	async function onSubmitLogin(e) {
 		e.preventDefault()
@@ -12,14 +13,14 @@ const FormToLogin : React.FC = () => {
 		const response = await fetch('http://localhost:3307/login', {
 			method: 'POST',
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({userName, userPassword})
+			body: JSON.stringify({ userName, userPassword })
 		})
 		
-		const data = response
-		
 		if (response.status === 200) {
-			alert('success')
-			console.log(data)
+			const user = await response.json()
+			console.log(user)
+			localStorage.setItem("userId", user.id)
+			localStorage.setItem("userName", user.user_name)
 		} else {
 			alert('login fail')
 		}
@@ -31,7 +32,7 @@ const FormToLogin : React.FC = () => {
 			<form onSubmit={(e) => onSubmitLogin(e)}>
 				<input placeholder={"Enter user name..."} onChange={(e) => setUserName(e.target.value)}/>
 				<input placeholder={"Enter password"} type={"password"} onChange={(e) => setPassword(e.target.value)}/>
-				<button>Create user</button>
+				<button>LOGIN</button>
 			</form>
 			<div>
 				<Link to={"/register"}>Register</Link>

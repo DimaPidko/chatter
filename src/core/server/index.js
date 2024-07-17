@@ -49,7 +49,7 @@ app.post('/login', (req, res) => {
 					const decryptPassword = decrypttPassword(user.password)
 					
 					if(decryptPassword === userPassword) {
-						res.status(200).send('Login successful')
+						res.status(200).json(user)
 					} else {
 						res.status(401).send('Invalid credentials')
 					}
