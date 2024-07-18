@@ -18,9 +18,9 @@ const FormToLogin : React.FC = () => {
 		
 		if (response.status === 200) {
 			const user = await response.json()
-			console.log(user)
 			localStorage.setItem("userId", user.id)
 			localStorage.setItem("userName", user.user_name)
+			navigate('/chats')
 		} else {
 			alert('login fail')
 		}

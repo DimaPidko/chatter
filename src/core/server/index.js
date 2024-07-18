@@ -34,10 +34,9 @@ app.post('/register', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-	
-	const { userName, userPassword } = req.body
-	
 	try {
+		const { userName, userPassword } = req.body
+		
 		connection.query('SELECT * FROM users WHERE user_name = ? ', [userName], (error, result) => {
 			if (error) {
 				res.status(500).send(`Error: ${error.message}`)
@@ -60,6 +59,31 @@ app.post('/login', (req, res) => {
 		res.status(500).send(`Error: ${error.message}`)
 	}
 })
+
+app.post('/createChat', (req, res) => {
+	try {
+		const { chatName, themeChat, privateChat, createdById, createdByName } = req.body;
+		
+		if (!chatName || !createdById || !createdByName) {
+			return res.status(400).send('Invalid input');
+		}
+		
+		connection.query(
+			'INSERT INTO chats (chat_name, created_byId, created_byName, chat_theme, private) VALUES (?, ?, ?, ?, ?)',
+			[chatName, createdById, createdByName, themeChat, privateChat],
+			(error) => {
+				if (error) {
+					res.status(500).send(`Error: ${error.message}`);
+				} else {
+					res.status(200).send('Chat created!');
+				}
+			}
+		);
+	} catch (error) {
+		res.status(500).send(`Error: ${error.message}`);
+	}
+});
+
 
 
 app.listen(PORT, () => {
