@@ -17,11 +17,21 @@ const connection = mysql.createConnection({
 	port: PORT
 })
 
+app.get('/showChat', (req, res) => {
+	connection.query('SELECT * FROM chats', (error, result) => {
+		if (error) {
+			console.error(`Error: ${error.message}`);
+			return res.status(500).send('Server error');
+		}
+		res.status(200).send(result);
+	});
+});
+
 app.post('/register', (req, res) => {
 	try {
-		const { userName, userPassword } = req.body
+		const { userName, userPassword, registrationDate, lastActivity } = req.body
 		
-		connection.query('INSERT INTO users (user_name, password) VALUES (?, ?)', [userName, encryptPassword(userPassword)], (error) => {
+		connection.query('INSERT INTO users (user_name, password, registration_date, last_activity) VALUES (?, ?, ?, ?)', [userName, encryptPassword(userPassword), registrationDate, lastActivity], (error) => {
 			if (error) {
 				res.status(500).send(`Error: ${error.message}`)
 			} else {
