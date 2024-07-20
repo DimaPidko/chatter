@@ -17,6 +17,21 @@ const connection = mysql.createConnection({
 	port: PORT
 })
 
+app.get('/chat/:id', (req, res) => {
+	const chatId = req.params.id;
+	connection.query('SELECT * FROM chats WHERE id = ?', [chatId], (error, result) => {
+		if (error) {
+			console.error(`Error: ${error.message}`);
+			return res.status(500).send('Server error');
+		}
+		if (result.length === 0) {
+			return res.status(404).send('Chat not found');
+		}
+		res.status(200).json(result[0]);
+	});
+});
+
+
 app.get('/showChat', (req, res) => {
 	connection.query('SELECT * FROM chats', (error, result) => {
 		if (error) {

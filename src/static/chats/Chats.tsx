@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Chats: React.FC = () => {
-	const [chatName, setChatName] = useState<string>("");
-	const [themeChat, setThemeChat] = useState<string>("");
-	const [privateChat, setPrivateChat] = useState<boolean>(false);
-	const [chats, setChats] = useState([]);
+	const [chatName, setChatName] = useState<string>("")
+	const [themeChat, setThemeChat] = useState<string>("")
+	const [privateChat, setPrivateChat] = useState<boolean>(false)
+	const [chats, setChats] = useState<Array<object>>([])
+	const navigate = useNavigate()
 	
 	const user = {
 		name: localStorage.getItem("userName") || "Guest",
@@ -18,19 +20,24 @@ const Chats: React.FC = () => {
 					method: "GET",
 					headers: { "Content-Type": "application/json" }
 				});
-				const data = await response.json();
-				setChats(data);
-				console.log(chats)
+				const data = await response.json()
+				setChats(data)
 			} catch (error) {
-				console.error(`Error: ${error.message}`);
+				console.error(`Error: ${error.message}`)
 			}
 		};
 		
 		fetchChats();
 	}, []);
 	
+	function onEnterChat(e) {
+		e.preventDefault()
+		
+		navigate(`/chat/${e.target.id}`)
+	}
+	
 	const onCreateChat = async (e) => {
-		e.preventDefault();
+		e.preventDefault()
 		
 		try {
 			const newChat = {
@@ -48,14 +55,13 @@ const Chats: React.FC = () => {
 			});
 			
 			if (!response.ok) {
-				throw new Error('Failed to create chat');
+				throw new Error('Failed to create chat')
 			}
 			
-			// Refresh chats after creating a new one
-			const data = await response.json();
-			setChats((prevChats) => [...prevChats, data]);
+			const data = await response.json()
+			setChats((prevChats) => [...prevChats, data])
 		} catch (error) {
-			console.error(`Error: ${error.message}`);
+			console.error(`Error: ${error.message}`)
 		}
 	};
 	
@@ -89,7 +95,7 @@ const Chats: React.FC = () => {
 				{chats.length > 0 ? (
 					<ul>
 						{chats.map((chat) => (
-							<li key={chat.id}>{chat.chat_name} - {chat.chat_theme}</li>
+							<li id={chat.id} key={chat.id} onClick={(e) => onEnterChat(e)}>{chat.chat_name}</li>
 						))}
 					</ul>
 				) : (
