@@ -1,11 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 
 const FormToLogin : React.FC = () => {
 	const [userName, setUserName] = useState<string>('')
 	const [userPassword, setPassword] = useState<string>('')
 	const navigate = useNavigate()
+	
+	useEffect(() => {
+		login()
+	}, [])
+	
+	function login() {
+		if (localStorage.getItem('userId') && localStorage.getItem("userName")) {
+			navigate('/chats')
+		}
+	}
 	
 	async function onSubmitLogin(e) {
 		e.preventDefault()
