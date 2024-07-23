@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { setUserName } from './FormToLoginSlice.ts';
+import { setUserName, setUserId } from './FormToLoginSlice.ts';
 import { useDispatch } from 'react-redux';
 
 const FormToLogin: React.FC = () => {
@@ -26,6 +26,7 @@ const FormToLogin: React.FC = () => {
 			if (response.status === 200) {
 				const user = await response.json();
 				dispatch(setUserName(user.userName));
+				dispatch(setUserId(user.userId))
 				navigate('/chats');
 			}
 		}
@@ -43,6 +44,7 @@ const FormToLogin: React.FC = () => {
 		if (response.status === 200) {
 			const user = await response.json();
 			dispatch(setUserName(user.userName))
+			dispatch(setUserId(+user.userId))
 			setUserNamee("");
 			setPassword("");
 			localStorage.setItem("token", user.token);

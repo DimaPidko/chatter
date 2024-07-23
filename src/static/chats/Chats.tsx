@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import FormToCreateChat from '../../shared/formToCreateChat/FormToCreateChat.tsx'
 import { setUserName } from '../../shared/formToLogin/FormToLoginSlice.ts';
 
 const Chats: React.FC = () => {
-	const [chatName, setChatName] = useState<string>("");
-	const [themeChat, setThemeChat] = useState<string>("");
-	const [privateChat, setPrivateChat] = useState<boolean>(false);
 	const [chats, setChats] = useState<Array<any>>([]);
 	const { userName } = useSelector((state) => state.login)
 	const navigate = useNavigate();
@@ -53,69 +51,10 @@ const Chats: React.FC = () => {
 		navigate(`/chat/${e.target.id}`);
 	}
 	
-	const onCreateChat = async (e) => {
-		e.preventDefault();
-		
-		try {
-			const newChat = {
-				chatName,
-				themeChat,
-				privateChat,
-				createdById: user.id,
-				createdByName: user.name
-			};
-			
-			const response = await fetch('http://localhost:3307/createChat', {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(newChat)
-			});
-			
-			if (!response.ok) {
-				throw new Error('Failed to create chat');
-			}
-			
-			const data = await response.json();
-			setChats((prevChats) => [...prevChats, data]);
-		} catch (error) {
-			console.error(`Error: ${error.message}`);
-		}
-	};
-	
 	return (
 		<div className="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
 			<h1 className="text-3xl font-bold mb-6">Hello {userName}</h1>
-			<form onSubmit={onCreateChat} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg transform transition-transform duration-500 hover:scale-105">
-				<h2 className="text-2xl font-semibold mb-4">Form to create chat</h2>
-				<div className="mb-4">
-					<input
-						placeholder="Enter chat name..."
-						value={chatName}
-						onChange={(e) => setChatName(e.target.value)}
-						className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-				</div>
-				<div className="mb-4">
-					<input
-						placeholder="What theme of chat?"
-						value={themeChat}
-						onChange={(e) => setThemeChat(e.target.value)}
-						className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-				</div>
-				<div className="mb-4 flex items-center">
-					<h3 className="text-lg mr-4">Is private?</h3>
-					<input
-						type="checkbox"
-						checked={privateChat}
-						onChange={() => setPrivateChat(!privateChat)}
-						className="w-6 h-6 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-					/>
-				</div>
-				<button type="submit" className="bg-blue-500 text-white py-3 rounded-lg w-full text-xl font-semibold hover:bg-blue-600 transition-colors duration-300">
-					Create chat
-				</button>
-			</form>
+			<FormToCreateChat />
 			<hr className="my-6 w-full max-w-lg" />
 			<div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
 				{chats.length > 0 ? (
