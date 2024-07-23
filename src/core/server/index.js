@@ -175,10 +175,11 @@ app.post('/login', (req, res) => {
 					const decryptPassword = decrypttPassword(user.password);
 					
 					if (decryptPassword === userPassword) {
-						const token = generateToken({ userName: user.user_name, userId: user.id})
+						const token = generateToken({ userName: user.user_name, userId: user.id });
 						res.status(200).json({
 							token,
-							userName: user.user_name
+							userName: user.user_name,
+							userId: user.id,
 						});
 					} else {
 						res.status(401).send('Invalid credentials');
@@ -191,21 +192,13 @@ app.post('/login', (req, res) => {
 	}
 });
 
+
 app.post('/auto-login', (req, res) => {
 	try {
 		const { token } = req.body;
 		const data = verifyToken(token);
-		res.status(200).json(data)
-		
-		// connection.query('SELECT * FROM users WHERE user_name = ?', [data.userName], (error, result) => {
-		// 	if (error) {
-		// 		res.status(500).send(`Error: ${error.message}`);
-		// 	} else {
-		// 		const user = result[0];
-		// 		res.status(200).json(data)
-		// 	}
-		// })
-	}catch (error) {
+		res.status(200).json(data);
+	} catch (error) {
 		res.status(500).send(`Error: ${error.message}`);
 	}
 });

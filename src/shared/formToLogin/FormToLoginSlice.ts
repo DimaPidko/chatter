@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
 	userName: '',
+	userId: '',
 }
 
 const FormToLoginSlice = createSlice({
@@ -10,6 +11,9 @@ const FormToLoginSlice = createSlice({
 	reducers: {
 		setUserName: (state, action) => {
 			state.userName = action.payload;
+		},
+		setUserId: (state, action) => {
+			state.userId = action.payload;
 		},
 		resetData: (state) => {
 			state.userName = '';
@@ -20,4 +24,4 @@ const FormToLoginSlice = createSlice({
 const {actions, reducer} = FormToLoginSlice;
 
 export default reducer;
-export const { setUserName, resetData } = actions;
+export const { setUserName, resetData, setUserId } = actions;
