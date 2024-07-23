@@ -1,15 +1,18 @@
 import express from 'express';
-import ws, { WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import cors from 'cors';
 import mysql from 'mysql2';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const app = express();
 const PORT = 3307;
 const WSPORT = 5000;
-
+const SECRET = crypto.randomUUID();
 app.use(express.json());
 app.use(cors());
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////WEBSOCKET////////////////////////////////////////////
 const wss = new WebSocketServer({ port: WSPORT }, () => {
 	console.log(`WebSocket server started on port: ${WSPORT}`);
 });
@@ -27,7 +30,6 @@ wss.on('connection', (ws) => {
 					currentChatId = message.chat_id;
 					clients.set(ws, currentChatId);
 					
-					// Запрашиваем все сообщения из базы данных
 					const messages = await getMessagesFromDB(currentChatId);
 					ws.send(JSON.stringify({ event: 'history', messages }));
 					
@@ -90,6 +92,8 @@ async function getMessagesFromDB(chat_id) {
 		});
 	});
 }
+///////////////////////////////////////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 const connection = mysql.createConnection({
 	host: 'localhost',
@@ -171,7 +175,11 @@ app.post('/login', (req, res) => {
 					const decryptPassword = decrypttPassword(user.password);
 					
 					if (decryptPassword === userPassword) {
-						res.status(200).json(user);
+						const token = generateToken({ userName: user.user_name, userId: user.id})
+						res.status(200).json({
+							token,
+							userName: user.user_name
+						});
 					} else {
 						res.status(401).send('Invalid credentials');
 					}
@@ -179,6 +187,25 @@ app.post('/login', (req, res) => {
 			}
 		});
 	} catch (error) {
+		res.status(500).send(`Error: ${error.message}`);
+	}
+});
+
+app.post('/auto-login', (req, res) => {
+	try {
+		const { token } = req.body;
+		const data = verifyToken(token);
+		res.status(200).json(data)
+		
+		// connection.query('SELECT * FROM users WHERE user_name = ?', [data.userName], (error, result) => {
+		// 	if (error) {
+		// 		res.status(500).send(`Error: ${error.message}`);
+		// 	} else {
+		// 		const user = result[0];
+		// 		res.status(200).json(data)
+		// 	}
+		// })
+	}catch (error) {
 		res.status(500).send(`Error: ${error.message}`);
 	}
 });
@@ -237,4 +264,16 @@ function decrypttPassword(encryptedPassword) {
 		decryptedPassword += reversedEncryptedPassword[i + 2];
 	}
 	return decryptedPassword;
+}
+
+function generateToken(payload, expiresIn = "6h") {
+	return jwt.sign(payload, SECRET, { expiresIn });
+}
+
+function verifyToken(token) {
+	try {
+		return jwt.verify(token, SECRET);
+	} catch (error) {
+		console.error(`Error: ${error.message}`);
+	}
 }

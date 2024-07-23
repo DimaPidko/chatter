@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+
 interface Message {
 	id: number;
 	message_from: string;
@@ -17,7 +18,7 @@ interface ChatInfo {
 const ChatPage: React.FC = () => {
 	const [chatInfo, setChatInfo] = useState<ChatInfo | null>(null);
 	const [messages, setMessages] = useState<Message[]>([]);
-	const [newMessage, setNewMessage] = useState('');
+	const [newMessage, setNewMessage] = useState<string>('');
 	const { id } = useParams();
 	const ws = React.useRef<WebSocket | null>(null);
 	
@@ -25,7 +26,6 @@ const ChatPage: React.FC = () => {
 		getChatInfo();
 		connectWebSocket();
 		
-		// Cleanup WebSocket on component unmount
 		return () => {
 			if (ws.current) {
 				ws.current.close();
@@ -89,32 +89,38 @@ const ChatPage: React.FC = () => {
 	};
 	
 	return (
-		<section>
+		<section className="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
 			{chatInfo ? (
-				<div>
-					<h1>{chatInfo.chat_name}</h1>
-					<p>{`Theme: ${chatInfo.chat_theme}`}</p>
-					<p>{`Created by: ${chatInfo.created_byName}`}</p>
+				<div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
+					<h1 className="text-3xl font-bold mb-4">{chatInfo.chat_name}</h1>
+					<p className="text-xl mb-2">{`Theme: ${chatInfo.chat_theme}`}</p>
+					<p className="text-lg mb-4">{`Created by: ${chatInfo.created_byName}`}</p>
 					
-					<div>
+					<div className="bg-gray-200 p-4 rounded-lg mb-4 max-h-96 overflow-y-auto">
 						{messages.map((msg) => (
-							<div key={msg.id}>
-								<strong>{msg.message_from}</strong>: {msg.message_text} <em>{msg.date_message}</em>
+							<div key={msg.id} className="mb-2">
+								<strong className="text-blue-600">{msg.message_from}</strong>: {msg.message_text} <em className="text-gray-500">{new Date(msg.date_message).toLocaleString()}</em>
 							</div>
 						))}
 					</div>
 					
-					<div>
+					<div className="flex items-center space-x-4">
 						<input
 							type="text"
 							value={newMessage}
 							onChange={(e) => setNewMessage(e.target.value)}
+							className="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 						/>
-						<button onClick={handleSendMessage}>Send</button>
+						<button
+							onClick={handleSendMessage}
+							className="bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 transition-colors duration-300"
+						>
+							Send
+						</button>
 					</div>
 				</div>
 			) : (
-				<p>Loading chat info...</p>
+				<p className="text-xl">Loading chat info...</p>
 			)}
 		</section>
 	);
