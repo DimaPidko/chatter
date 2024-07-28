@@ -246,15 +246,17 @@ app.post('/auto-login', (req, res) => {
 
 app.post('/createChat', (req, res) => {
 	try {
-		const { chatName, themeChat, privateChat, createdById, createdByName } = req.body;
+		const { chatName, themeChat, privateChat, createdByName } = req.body;
 		
-		if (!chatName || !createdById || !createdByName) {
+		console.log(req.body)
+		
+		if (!chatName || !createdByName) {
 			return res.status(400).send('Invalid input');
 		}
 		
 		connection.query(
-			'INSERT INTO chats (chat_name, created_byId, created_byName, chat_theme, private) VALUES (?, ?, ?, ?, ?)',
-			[chatName, createdById, createdByName, themeChat, privateChat],
+			'INSERT INTO chats (chat_name, created_byName, chat_theme, private) VALUES (?, ?, ?, ?)',
+			[chatName, createdByName, themeChat, privateChat],
 			(error) => {
 				if (error) {
 					res.status(500).send(`Error: ${error.message}`);

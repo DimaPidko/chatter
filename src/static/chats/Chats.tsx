@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import FormToCreateChat from '../../shared/formToCreateChat/FormToCreateChat.tsx'
-import { setUserName } from '../../shared/formToLogin/FormToLoginSlice.ts';
+import { setUserId, setUserName } from '../../shared/formToLogin/FormToLoginSlice.ts'
 
 const Chats: React.FC = () => {
 	const [chats, setChats] = useState<Array<any>>([]);
@@ -41,6 +41,7 @@ const Chats: React.FC = () => {
 			if (response.status === 200) {
 				const user = await response.json();
 				dispatch(setUserName(user.userName));
+				dispatch(setUserId(user.userId))
 				navigate('/chats');
 			}
 		}

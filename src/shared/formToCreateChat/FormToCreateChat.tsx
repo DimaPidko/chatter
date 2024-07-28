@@ -4,7 +4,7 @@ import { setChatName, setThemeChat, setPrivateChat, setChats } from './FormToCre
 
 const FormToCreateChat = () => {
 	const { chatName, themeChat, privateChat,} = useSelector((state) => state.form)
-	const { userName, userId } = useSelector((state) => state.login)
+	const { userName } = useSelector((state) => state.login)
 	const dispatch = useDispatch()
 	
 	const onCreateChat = async (e) => {
@@ -15,7 +15,6 @@ const FormToCreateChat = () => {
 				chatName,
 				themeChat,
 				privateChat,
-				createdById: userId,
 				createdByName: userName,
 			};
 			
@@ -47,12 +46,6 @@ const FormToCreateChat = () => {
 				/>
 			</div>
 			<div className="mb-4">
-				{/* <input */}
-				{/* 	placeholder="What theme of chat?" */}
-				{/* 	value={themeChat} */}
-				{/* 	onChange={(e) => dispatch(setThemeChat(e.target.value))} */}
-				{/* 	className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" */}
-				{/* /> */}
 				<label htmlFor={'theme-chat'}>Choose theme chat:</label>
 				<select id={'theme-chat'} onChange={(e) => dispatch(setThemeChat(e.target.value))} value={themeChat}>
 					<option value={'anime'}>Anime</option>
