@@ -19,8 +19,6 @@ const FormToCreateChat = () => {
 				createdByName: userName,
 			};
 			
-			console.log(newChat)
-			
 			const response = await fetch('http://localhost:3307/createChat', {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -49,12 +47,18 @@ const FormToCreateChat = () => {
 				/>
 			</div>
 			<div className="mb-4">
-				<input
-					placeholder="What theme of chat?"
-					value={themeChat}
-					onChange={(e) => dispatch(setThemeChat(e.target.value))}
-					className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-				/>
+				{/* <input */}
+				{/* 	placeholder="What theme of chat?" */}
+				{/* 	value={themeChat} */}
+				{/* 	onChange={(e) => dispatch(setThemeChat(e.target.value))} */}
+				{/* 	className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" */}
+				{/* /> */}
+				<label htmlFor={'theme-chat'}>Choose theme chat:</label>
+				<select id={'theme-chat'} onChange={(e) => dispatch(setThemeChat(e.target.value))} value={themeChat}>
+					<option value={'anime'}>Anime</option>
+					<option value={'games'}>Games</option>
+					<option value={'chatting'}>Just Chatting</option>
+				</select>
 			</div>
 			<div className="mb-4 flex items-center">
 				<h3 className="text-lg mr-4">Is private?</h3>

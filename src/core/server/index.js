@@ -140,6 +140,47 @@ app.get('/showChat', (req, res) => {
 	});
 });
 
+app.post('/deleteChat', (req, res) => {
+	const chatId = req.body.chatId;
+	
+	connection.beginTransaction((err) => {
+		if (err) {
+			console.error(`Error: ${err.message}`);
+			return res.status(500).send('Server error');
+		}
+		
+		connection.query('DELETE FROM messages WHERE id_chat = ?', [chatId], (error, result) => {
+			if (error) {
+				return connection.rollback(() => {
+					console.error(`Error: ${error.message}`);
+					res.status(500).send('Server error');
+				});
+			}
+			
+			connection.query('DELETE FROM chats WHERE id = ?', [chatId], (error, result) => {
+				if (error) {
+					return connection.rollback(() => {
+						console.error(`Error: ${error.message}`);
+						res.status(500).send('Server error');
+					});
+				}
+				
+				connection.commit((err) => {
+					if (err) {
+						return connection.rollback(() => {
+							console.error(`Error: ${err.message}`);
+							res.status(500).send('Server error');
+						});
+					}
+					
+					res.status(200).send({ message: 'Chat and associated messages deleted successfully' });
+				});
+			});
+		});
+	});
+});
+
+
 app.post('/register', (req, res) => {
 	try {
 		const { userName, userPassword, registrationDate, lastActivity } = req.body;
