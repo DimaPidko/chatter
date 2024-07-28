@@ -1,5 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
-import chats from '../../static/chats/Chats.tsx'
+import { createSlice } from '@reduxjs/toolkit';
 
 interface initialState {
 	chatName: string;
@@ -10,7 +9,7 @@ interface initialState {
 
 const initialState = <initialState>{
 	chatName: '',
-	themeChat: '',
+	themeChat: 'games',
 	privateChat: '',
 	chats: [],
 }

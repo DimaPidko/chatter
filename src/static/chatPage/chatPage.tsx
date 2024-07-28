@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import ChatPageAdmin from '../../shared/chatPageAdmin/ChatPageAdmin.tsx';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 interface Message {
@@ -21,6 +23,7 @@ const ChatPage: React.FC = () => {
 	const [newMessage, setNewMessage] = useState<string>('');
 	const { id } = useParams();
 	const ws = React.useRef<WebSocket | null>(null);
+	const { userName } = useSelector((state) => state.login)
 	
 	useEffect(() => {
 		getChatInfo();
@@ -79,7 +82,7 @@ const ChatPage: React.FC = () => {
 		const message = {
 			event: 'message',
 			chat_id: id,
-			message_from: localStorage.getItem('userName'),
+			message_from: userName,
 			message_text: newMessage,
 			date_message: new Date().toISOString(),
 		};
@@ -118,6 +121,7 @@ const ChatPage: React.FC = () => {
 							Send
 						</button>
 					</div>
+					<ChatPageAdmin chatInfo={chatInfo}/>
 				</div>
 			) : (
 				<p className="text-xl">Loading chat info...</p>
