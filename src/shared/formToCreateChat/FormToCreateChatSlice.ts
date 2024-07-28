@@ -3,14 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 interface initialState {
 	chatName: string;
 	themeChat: string;
-	privateChat: string;
+	privateChat: boolean;
 	chats: Array<any>;
 }
 
 const initialState = <initialState>{
 	chatName: '',
 	themeChat: 'games',
-	privateChat: '',
+	privateChat: false,
 	chats: [],
 }
 
