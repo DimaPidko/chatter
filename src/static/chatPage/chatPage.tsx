@@ -20,6 +20,7 @@ const ChatPage: React.FC = () => {
 	const [chatInfo, setChatInfo] = useState<ChatInfo | null>(null);
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [newMessage, setNewMessage] = useState<string>('');
+	const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 	const { id } = useParams<{ id: string }>();
 	const ws = useRef<WebSocket | null>(null);
 	const { userName } = useSelector((state) => state.login);
@@ -59,7 +60,7 @@ const ChatPage: React.FC = () => {
 		ws.current = new WebSocket(`ws://localhost:5000`);
 		
 		ws.current.onopen = () => {
-			ws.current?.send(JSON.stringify({ event: 'join', chat_id: id }));
+			ws.current?.send(JSON.stringify({ event: 'join', chat_id: id, username: userName }));
 		};
 		
 		ws.current.onmessage = (event) => {
@@ -70,6 +71,9 @@ const ChatPage: React.FC = () => {
 					break;
 				case 'message':
 					setMessages((prevMessages) => [...prevMessages, data]);
+					break;
+				case 'users':
+					setOnlineUsers(data.users);
 					break;
 				default:
 					break;
@@ -114,33 +118,45 @@ const ChatPage: React.FC = () => {
 				onClick={() => navigate('/')}
 				className="bg-blue-500 text-white py-2 px-4 rounded-lg mb-6 hover:bg-blue-600 transition-colors duration-300"
 			>
-				Back to list of chat
+				Back to list of chats
 			</button>
 			{chatInfo ? (
-				<div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
-					<h1 className="text-3xl font-bold mb-4">{chatInfo.chat_name}</h1>
-					<p className="text-xl mb-2">{`Theme: ${chatInfo.chat_theme}`}</p>
-					<p className="text-lg mb-4">{`Created by: ${chatInfo.created_byName}`}</p>
-					<div className="bg-gray-200 p-4 rounded-lg mb-4 max-h-96 overflow-y-auto">
+				<div className='bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl'>
+					<h1 className='text-3xl font-bold mb-4'>{chatInfo.chat_name}</h1>
+					<div className='mb-4'>
+						<p className='text-xl'>{`Theme: ${chatInfo.chat_theme}`}</p>
+						<p className='text-lg'>{`Created by: ${chatInfo.created_byName}`}</p>
+					</div>
+					<div className='bg-blue-50 p-4 rounded-lg mb-6'>
+						<p className='text-lg font-semibold mb-2'>Online Users:</p>
+						<div className='flex flex-wrap'>
+							{onlineUsers.map((user, index) => (
+								<span key={index} className='bg-blue-200 text-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2'>
+									{user}
+								</span>
+							))}
+						</div>
+					</div>
+					<div className='bg-gray-200 p-4 rounded-lg mb-4 max-h-96 overflow-y-auto'>
 						{messages.map((msg) => (
-							<div key={msg.id} className="mb-2">
-								<strong className="text-blue-600">{msg.message_from}</strong>: {msg.message_text} <em className="text-gray-500">{new Date(msg.date_message).toLocaleString()}</em>
+							<div key={msg.id} className='mb-2'>
+								<strong className='text-blue-600'>{msg.message_from}</strong>: {msg.message_text} <em className='text-gray-500'>{new Date(msg.date_message).toLocaleString()}</em>
 							</div>
 						))}
 					</div>
 					
-					<div className="flex items-center space-x-4">
+					<div className='flex items-center space-x-4'>
 						<input
-							type="text"
+							type='text'
 							value={newMessage}
 							onChange={(e) => setNewMessage(e.target.value)}
 							onKeyDown={handleKeyDown}
-							className="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+							className='flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
 							ref={inputRef}
 						/>
 						<button
 							onClick={handleSendMessage}
-							className="bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 transition-colors duration-300"
+							className='bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 transition-colors duration-300'
 						>
 							Send
 						</button>
@@ -148,7 +164,7 @@ const ChatPage: React.FC = () => {
 					<ChatPageAdmin chatInfo={chatInfo} />
 				</div>
 			) : (
-				<p className="text-xl">Loading chat info...</p>
+				<p className='text-xl'>Loading chat info...</p>
 			)}
 		</section>
 	);

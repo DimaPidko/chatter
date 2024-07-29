@@ -35,7 +35,7 @@ const Chats: React.FC = () => {
 	
 	const autoLogin = async () => {
 		const token = localStorage.getItem('token');
-		if (!token) return;
+		if (!token) navigate('/register');
 		
 		try {
 			const response = await fetch('http://localhost:3307/auto-login', {
