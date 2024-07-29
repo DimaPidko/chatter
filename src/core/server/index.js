@@ -18,9 +18,11 @@ const wss = new WebSocketServer({ port: WSPORT }, () => {
 });
 
 const clients = new Map();
+const chatUsers = new Map();
 
 wss.on('connection', (ws) => {
 	let currentChatId = null;
+	let currentUserName = null;
 	
 	ws.on('message', async (data) => {
 		try {
@@ -28,14 +30,20 @@ wss.on('connection', (ws) => {
 			switch (message.event) {
 				case 'join':
 					currentChatId = message.chat_id;
-					clients.set(ws, currentChatId);
+					currentUserName = message.username;
+					clients.set(ws, { chatId: currentChatId, username: currentUserName });
+					
+					if (!chatUsers.has(currentChatId)) {
+						chatUsers.set(currentChatId, new Set());
+					}
+					chatUsers.get(currentChatId).add(currentUserName);
 					
 					const messages = await getMessagesFromDB(currentChatId);
 					ws.send(JSON.stringify({ event: 'history', messages }));
 					
+					broadcastUsers(currentChatId);
 					break;
 				case 'message':
-					console.log('Received message:', message);
 					await saveMessageToDB(message);
 					broadcastMessage(message);
 					break;
@@ -46,37 +54,52 @@ wss.on('connection', (ws) => {
 	});
 	
 	ws.on('close', () => {
+		if (currentChatId && currentUserName) {
+			chatUsers.get(currentChatId).delete(currentUserName);
+			broadcastUsers(currentChatId);
+		}
 		clients.delete(ws);
 	});
 });
 
 function broadcastMessage(message) {
 	wss.clients.forEach((client) => {
-		if (clients.get(client) === message.chat_id) {
+		const clientInfo = clients.get(client);
+		if (clientInfo.chatId === message.chat_id) {
+			client.send(JSON.stringify(message));
+		}
+	});
+}
+
+function broadcastUsers(chatId) {
+	const users = Array.from(chatUsers.get(chatId) || []);
+	const message = {
+		event: 'users',
+		chat_id: chatId,
+		users,
+	};
+	wss.clients.forEach((client) => {
+		const clientInfo = clients.get(client);
+		if (clientInfo.chatId === chatId) {
 			client.send(JSON.stringify(message));
 		}
 	});
 }
 
 async function saveMessageToDB(message) {
-	try {
-		const { chat_id, message_from, message_text, date_message } = message;
-		const query = 'INSERT INTO messages (id_chat, message_from, message_text, date_message) VALUES (?, ?, ?, ?)';
-		console.log('Saving message to DB:', message);
-		
-		return new Promise((resolve, reject) => {
-			connection.query(query, [chat_id, message_from, message_text, date_message], (error) => {
-				if (error) {
-					console.error(`Error saving message to DB: ${error.message}`);
-					reject(error);
-				} else {
-					resolve();
-				}
-			});
+	const { chat_id, message_from, message_text, date_message } = message;
+	const query = 'INSERT INTO messages (id_chat, message_from, message_text, date_message) VALUES (?, ?, ?, ?)';
+	
+	return new Promise((resolve, reject) => {
+		connection.query(query, [chat_id, message_from, message_text, date_message], (error) => {
+			if (error) {
+				console.error(`Error saving message to DB: ${error.message}`);
+				reject(error);
+			} else {
+				resolve();
+			}
 		});
-	} catch (error) {
-		console.error(`Error: ${error.message}`);
-	}
+	});
 }
 
 async function getMessagesFromDB(chat_id) {
@@ -180,7 +203,6 @@ app.post('/deleteChat', (req, res) => {
 	});
 });
 
-
 app.post('/register', (req, res) => {
 	try {
 		const { userName, userPassword, registrationDate, lastActivity } = req.body;
@@ -233,7 +255,6 @@ app.post('/login', (req, res) => {
 	}
 });
 
-
 app.post('/auto-login', (req, res) => {
 	try {
 		const { token } = req.body;
@@ -248,7 +269,7 @@ app.post('/createChat', (req, res) => {
 	try {
 		const { chatName, themeChat, privateChat, createdByName } = req.body;
 		
-		console.log(req.body)
+		console.log(req.body);
 		
 		if (!chatName || !createdByName) {
 			return res.status(400).send('Invalid input');

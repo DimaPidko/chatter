@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useRef } from 'react'
+import { Simulate } from 'react-dom/test-utils'
 import { useSelector, useDispatch } from 'react-redux';
 import { setChatName, setThemeChat, setPrivateChat, setChats } from './FormToCreateChatSlice.ts'
+import input = Simulate.input
 
 const FormToCreateChat = () => {
 	const { chatName, themeChat, privateChat,} = useSelector((state) => state.form)
 	const { userName } = useSelector((state) => state.login)
+	const input = useRef(null)
 	const dispatch = useDispatch()
 	
 	const onCreateChat = async (e) => {
@@ -13,7 +16,7 @@ const FormToCreateChat = () => {
 		try {
 			const newChat = {
 				chatName,
-				themeChat,
+				themeChat: themeChat === 'custom' ? input.current.value : themeChat,
 				privateChat,
 				createdByName: userName,
 			};
@@ -53,8 +56,16 @@ const FormToCreateChat = () => {
 					<option value={'chatting'}>Just Chatting</option>
 					<option value={'movies'}>Movies</option>
 					<option value={'policy'}>Policy</option>
+					<option value={'custom'}>Custom Theme</option>
 				</select>
 			</div>
+			{themeChat === 'custom' ?
+				<input
+				placeholder={'Enter custom theme...'}
+				className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+				ref={input}
+				>
+				</input> : null }
 			<div className="mb-4 flex items-center">
 				<h3 className="text-lg mr-4">Is private?</h3>
 				<input
