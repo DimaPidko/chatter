@@ -12,6 +12,7 @@ const initialState = <initialState>{
 	themeChat: 'games',
 	privateChat: false,
 	chats: [],
+	filterChat: 'games',
 }
 
 const FormToCreateChatSlice = createSlice({
@@ -29,11 +30,17 @@ const FormToCreateChatSlice = createSlice({
 		},
 		setChats: (state, action) => {
 			state.chats.push(action.payload);
+		},
+		clearChats: (state) => {
+			state.chats = [];
+		},
+		setFilterChat: (state, action) => {
+			state.filterChat = action.payload;
 		}
 	}
 })
 
-const {actions, reducer} = FormToCreateChatSlice
+const {actions, reducer} = FormToCreateChatSlice;
 
-export default reducer
-export const { setChatName, setThemeChat, setPrivateChat, setChats } = actions
+export default reducer;
+export const { setChatName, setThemeChat, setPrivateChat, setChats, clearChats, setFilterChat } = actions;

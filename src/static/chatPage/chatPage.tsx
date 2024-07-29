@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import ChatPageAdmin from '../../shared/chatPageAdmin/ChatPageAdmin.tsx';
+import React, { useEffect, useState, useRef } from 'react';
+import ChatPageAdmin from '../../shared/chatPageAdmin/ChatPageAdmin';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
 
 interface Message {
 	id: number;
@@ -21,9 +20,10 @@ const ChatPage: React.FC = () => {
 	const [chatInfo, setChatInfo] = useState<ChatInfo | null>(null);
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [newMessage, setNewMessage] = useState<string>('');
-	const { id } = useParams();
-	const ws = React.useRef<WebSocket | null>(null);
-	const { userName } = useSelector((state) => state.login)
+	const { id } = useParams<{ id: string }>();
+	const ws = useRef<WebSocket | null>(null);
+	const { userName } = useSelector((state: RootState) => state.login);
+	const inputRef = useRef<HTMLInputElement>(null);
 	
 	useEffect(() => {
 		getChatInfo();
@@ -50,7 +50,7 @@ const ChatPage: React.FC = () => {
 			const data = await response.json();
 			setChatInfo(data);
 		} catch (error) {
-			console.error(error.message);
+			console.error('Failed to fetch chat info:', error);
 		}
 	};
 	
@@ -74,6 +74,16 @@ const ChatPage: React.FC = () => {
 					break;
 			}
 		};
+		
+		ws.current.onerror = (error) => {
+			console.error('WebSocket error:', error);
+		};
+		
+		ws.current.onclose = (event) => {
+			if (!event.wasClean) {
+				console.error('WebSocket closed unexpectedly');
+			}
+		};
 	};
 	
 	const handleSendMessage = () => {
@@ -91,6 +101,12 @@ const ChatPage: React.FC = () => {
 		setNewMessage('');
 	};
 	
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			handleSendMessage();
+		}
+	};
+	
 	return (
 		<section className="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
 			{chatInfo ? (
@@ -98,7 +114,6 @@ const ChatPage: React.FC = () => {
 					<h1 className="text-3xl font-bold mb-4">{chatInfo.chat_name}</h1>
 					<p className="text-xl mb-2">{`Theme: ${chatInfo.chat_theme}`}</p>
 					<p className="text-lg mb-4">{`Created by: ${chatInfo.created_byName}`}</p>
-					
 					<div className="bg-gray-200 p-4 rounded-lg mb-4 max-h-96 overflow-y-auto">
 						{messages.map((msg) => (
 							<div key={msg.id} className="mb-2">
@@ -112,7 +127,9 @@ const ChatPage: React.FC = () => {
 							type="text"
 							value={newMessage}
 							onChange={(e) => setNewMessage(e.target.value)}
+							onKeyDown={handleKeyDown}
 							className="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+							ref={inputRef}
 						/>
 						<button
 							onClick={handleSendMessage}
