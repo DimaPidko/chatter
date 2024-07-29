@@ -10,7 +10,7 @@ But as you can see, this project is here, I am DOING it!!!!
 
 **So why is this my 'FIRST' project. 🧑‍🦳**
 
-Everything is easy and simple my friends, after a long time of working on all my “PET-PROJECTS” (Here is the link to everything ->)
+Everything is easy and simple my friends, after a long time of working on all my “PET-PROJECTS” (Here is the link to everything -> https://github.com/DimaPidko/My-Pet-Projects-SPA- )
 I finally got excited about this work, my friends!!!
 What an incredible thrill I get from writing my “Messenger”
 
