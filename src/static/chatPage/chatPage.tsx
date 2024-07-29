@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ChatPageAdmin from '../../shared/chatPageAdmin/ChatPageAdmin';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 interface Message {
@@ -24,6 +24,7 @@ const ChatPage: React.FC = () => {
 	const ws = useRef<WebSocket | null>(null);
 	const { userName } = useSelector((state: RootState) => state.login);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const navigate = useNavigate();
 	
 	useEffect(() => {
 		getChatInfo();
@@ -109,6 +110,12 @@ const ChatPage: React.FC = () => {
 	
 	return (
 		<section className="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
+			<button
+				onClick={() => navigate('/')}
+				className="bg-blue-500 text-white py-2 px-4 rounded-lg mb-6 hover:bg-blue-600 transition-colors duration-300"
+			>
+				Back to list of chat
+			</button>
 			{chatInfo ? (
 				<div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
 					<h1 className="text-3xl font-bold mb-4">{chatInfo.chat_name}</h1>
@@ -138,7 +145,7 @@ const ChatPage: React.FC = () => {
 							Send
 						</button>
 					</div>
-					<ChatPageAdmin chatInfo={chatInfo}/>
+					<ChatPageAdmin chatInfo={chatInfo} />
 				</div>
 			) : (
 				<p className="text-xl">Loading chat info...</p>
