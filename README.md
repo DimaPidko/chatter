@@ -1,8 +1,5 @@
 **MAIN PAGE**
-![image](https://github.com/user-attachments/assets/bede216f-acaf-4407-94bc-a0085d5246e9)
+![image](https://github.com/user-attachments/assets/fbd69b20-1444-4005-945e-b662cd6cd89d)
 
 **CHAT PAGE**
-![image](https://github.com/user-attachments/assets/fcb61095-e777-4491-980a-96696d5c39a0)
-
-
-
+![image](https://github.com/user-attachments/assets/660bd65a-259b-46a6-83ef-ad8811445aa8)
