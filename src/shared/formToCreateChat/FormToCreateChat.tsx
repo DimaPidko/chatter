@@ -51,6 +51,8 @@ const FormToCreateChat = () => {
 					<option value={'anime'}>Anime</option>
 					<option value={'games'}>Games</option>
 					<option value={'chatting'}>Just Chatting</option>
+					<option value={'movies'}>Movies</option>
+					<option value={'policy'}>Policy</option>
 				</select>
 			</div>
 			<div className="mb-4 flex items-center">
