@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAdmin } from './chatPageAdminSlice.ts';
+import { onDeleteChat } from '../../core/ features/onDeleteChat.ts'
 
 interface ChatPageAdminProps {
 	chatInfo: {
@@ -22,28 +23,12 @@ const ChatPageAdmin: React.FC<ChatPageAdminProps> = ({ chatInfo }) => {
 		}
 	}, [userName, chatInfo.created_byName, dispatch]);
 	
-	const onDeleteChat = async () => {
-		try {
-			const response = await fetch('http://localhost:3307/deleteChat', {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ chatId: chatInfo.id })
-			});
-			
-			if (!response.ok) {
-				throw new Error(`Error: ${response.statusText}`);
-			}
-		} catch (error) {
-			console.error('Failed to delete chat:', error);
-		}
-	};
-	
 	return (
 		<section className="mt-4">
 			{isAdmin && (
 				<div className="flex justify-end">
 					<button
-						onClick={onDeleteChat}
+						onClick={() => onDeleteChat(chatInfo)}
 						className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors duration-300"
 					>
 						Delete Chat

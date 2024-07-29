@@ -22,7 +22,7 @@ const ChatPage: React.FC = () => {
 	const [newMessage, setNewMessage] = useState<string>('');
 	const { id } = useParams<{ id: string }>();
 	const ws = useRef<WebSocket | null>(null);
-	const { userName } = useSelector((state: RootState) => state.login);
+	const { userName } = useSelector((state) => state.login);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
 	
