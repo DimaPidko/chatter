@@ -9,10 +9,10 @@ interface initialState {
 
 const initialState = <initialState>{
 	chatName: '',
-	themeChat: 'games',
+	themeChat: 'Games',
 	privateChat: false,
 	chats: [],
-	filterChat: 'games',
+	filterChat: 'Games',
 }
 
 const FormToCreateChatSlice = createSlice({

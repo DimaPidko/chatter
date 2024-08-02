@@ -23,8 +23,9 @@ const ChatPage: React.FC = () => {
 	const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 	const { id } = useParams<{ id: string }>();
 	const ws = useRef<WebSocket | null>(null);
-	const { userName } = useSelector((state) => state.login);
+	const { userName } = useSelector((state: any) => state.login);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const messagesEndRef = useRef<HTMLDivElement | null>(null);
 	const navigate = useNavigate();
 	
 	useEffect(() => {
@@ -37,6 +38,10 @@ const ChatPage: React.FC = () => {
 			}
 		};
 	}, [id]);
+	
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
 	
 	const getChatInfo = async () => {
 		try {
@@ -104,6 +109,7 @@ const ChatPage: React.FC = () => {
 		
 		ws.current?.send(JSON.stringify(message));
 		setNewMessage('');
+		scrollToBottom();
 	};
 	
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -112,59 +118,75 @@ const ChatPage: React.FC = () => {
 		}
 	};
 	
+	const scrollToBottom = () => {
+		if (messagesEndRef.current) {
+			messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	};
+	
 	return (
-		<section className="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
+		<section className="bg-gray-100 min-h-screen p-8 flex flex-col items-center">
 			<button
 				onClick={() => navigate('/')}
-				className="bg-blue-500 text-white py-2 px-4 rounded-lg mb-6 hover:bg-blue-600 transition-colors duration-300"
+				className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 px-6 rounded-full mb-8 shadow-lg hover:from-purple-500 hover:to-indigo-500 transition-all duration-300"
 			>
-				Back to list of chats
+				Back to Chats
 			</button>
 			{chatInfo ? (
-				<div className='bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl'>
-					<h1 className='text-3xl font-bold mb-4'>{chatInfo.chat_name}</h1>
-					<div className='mb-4'>
-						<p className='text-xl'>{`Theme: ${chatInfo.chat_theme}`}</p>
-						<p className='text-lg'>{`Created by: ${chatInfo.created_byName}`}</p>
+				<div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-5xl">
+					<h1 className="text-5xl font-bold text-gray-800 mb-8 text-center">{chatInfo.chat_name}</h1>
+					<div className="flex justify-around mb-8">
+						<div className="bg-blue-50 p-5 rounded-lg shadow-md text-center flex-1 mx-2">
+							<p className="text-lg font-medium text-gray-700">Theme</p>
+							<p className="text-xl text-gray-900">{chatInfo.chat_theme}</p>
+						</div>
+						<div className="bg-blue-50 p-5 rounded-lg shadow-md text-center flex-1 mx-2">
+							<p className="text-lg font-medium text-gray-700">Created by</p>
+							<p className="text-xl text-gray-900">{chatInfo.created_byName}</p>
+						</div>
 					</div>
-					<div className='bg-blue-50 p-4 rounded-lg mb-6'>
-						<p className='text-lg font-semibold mb-2'>Online Users:</p>
-						<div className='flex flex-wrap'>
+					<div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-2xl mb-8 shadow-inner">
+						<p className="text-lg font-medium mb-4">Online Users:</p>
+						<div className="flex flex-wrap justify-center">
 							{onlineUsers.map((user, index) => (
-								<span key={index} className='bg-blue-200 text-blue-800 px-2 py-1 rounded-full text-sm mr-2 mb-2'>
+								<span key={index} className="bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full text-sm mr-2 mb-2 shadow">
 									{user}
 								</span>
 							))}
 						</div>
 					</div>
-					<div className='bg-gray-200 p-4 rounded-lg mb-4 max-h-96 overflow-y-auto'>
+					<div className="bg-gray-200 p-6 rounded-2xl mb-8 max-h-96 overflow-y-auto shadow-inner" style={{ maxHeight: '400px', overflowY: 'auto' }}>
 						{messages.map((msg) => (
-							<div key={msg.id} className='mb-2'>
-								<strong className='text-blue-600'>{msg.message_from}</strong>: {msg.message_text} <em className='text-gray-500'>{new Date(msg.date_message).toLocaleString()}</em>
+							<div key={msg.id} className={`mb-4 ${msg.message_from === chatInfo.created_byName ? 'text-orange-600' : 'text-blue-600'}`}>
+								<strong>{msg.message_from}</strong>: {msg.message_text}
+								<em className="text-gray-500 ml-2">{new Date(msg.date_message).toLocaleString()}</em>
 							</div>
 						))}
+						<div ref={messagesEndRef} />
 					</div>
 					
-					<div className='flex items-center space-x-4'>
+					<div className="flex items-center space-x-4">
 						<input
-							type='text'
+							type="text"
 							value={newMessage}
 							onChange={(e) => setNewMessage(e.target.value)}
 							onKeyDown={handleKeyDown}
-							className='flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
+							className="flex-1 p-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-inner"
 							ref={inputRef}
 						/>
 						<button
 							onClick={handleSendMessage}
-							className='bg-blue-500 text-white py-3 px-6 rounded-lg text-xl font-semibold hover:bg-blue-600 transition-colors duration-300'
+							className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 px-6 rounded-full text-lg font-semibold shadow-lg hover:from-purple-500 hover:to-indigo-500 transition-all duration-300"
 						>
 							Send
 						</button>
 					</div>
-					<ChatPageAdmin chatInfo={chatInfo} />
+					<div className="mt-8">
+						<ChatPageAdmin chatInfo={chatInfo} />
+					</div>
 				</div>
 			) : (
-				<p className='text-xl'>Loading chat info...</p>
+				<p className="text-xl text-gray-700">Loading chat info...</p>
 			)}
 		</section>
 	);
