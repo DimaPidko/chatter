@@ -55,7 +55,7 @@ const Chats: React.FC = () => {
 		}
 	};
 	
-	const onEnterChat = (e: React.MouseEvent<HTMLLIElement>) => {
+	const onEnterChat = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		navigate(`/chat/${e.currentTarget.id}`);
 	};
@@ -65,44 +65,53 @@ const Chats: React.FC = () => {
 		: [];
 	
 	return (
-		<div className="bg-gray-100 min-h-screen p-4 flex flex-col items-center">
-			<h1 className="text-3xl font-bold mb-6">Hello, {userName}</h1>
-			<FormToCreateChat />
-			<hr className="my-6 w-full max-w-lg border-gray-300" />
-			<div className="w-full max-w-lg mb-6">
-				<label htmlFor={'filter-chat'} className="block text-lg mb-2">Filter by:</label>
-				<select
-					id={'filter-chat'}
-					onChange={(e) => dispatch(setFilterChat(e.target.value))}
-					value={filterChat}
-					className="block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-				>
-					<option value={'anime'}>Anime</option>
-					<option value={'games'}>Games</option>
-					<option value={'chatting'}>Just Chatting</option>
-					<option value={'movies'}>Movies</option>
-					<option value={'policy'}>Policy</option>
-				</select>
-			</div>
-			<div className='bg-white p-6 rounded-lg shadow-lg w-full max-w-lg'>
-				{chats.length > 0 ? (
-					<ul>
-						{filteredChats.map((chat) => (
-							<li
+		<section className="min-h-screen p-8 bg-gradient-to-br from-indigo-100 via-white to-indigo-300">
+			<div className="container mx-auto max-w-7xl">
+				<h1 className="text-6xl font-bold text-center text-gray-800 mb-12">
+					Hello, {userName}!
+				</h1>
+				
+				<div className="bg-white p-8 rounded-lg shadow-lg mb-12">
+					<FormToCreateChat />
+				</div>
+				
+				<div className="bg-white p-8 rounded-lg shadow-lg mb-12">
+					<label htmlFor="filter-chat" className="block text-xl font-semibold mb-4 text-gray-800">
+						Filter by:
+					</label>
+					<select
+						id="filter-chat"
+						onChange={(e) => dispatch(setFilterChat(e.target.value))}
+						value={filterChat}
+						className="block w-full p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+					>
+						<option value="Anime">Anime</option>
+						<option value="Games">Games</option>
+						<option value="Chatting">Just Chatting</option>
+						<option value="Movies">Movies</option>
+						<option value="Policy">Policy</option>
+					</select>
+				</div>
+				
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+					{filteredChats.length > 0 ? (
+						filteredChats.map((chat) => (
+							<div
 								id={chat.id}
 								key={chat.id}
 								onClick={(e) => onEnterChat(e)}
-								className='cursor-pointer p-4 border-b border-gray-200 hover:bg-gray-100 transition-colors duration-300'
+								className="p-8 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105 cursor-pointer"
 							>
-								{chat.chat_name}
-							</li>
-						))}
-					</ul>
-				) : (
-					<p className="text-center">No chats available</p>
-				)}
+								<h2 className="text-3xl font-semibold text-gray-800">{chat.chat_name}</h2>
+								<p className="text-gray-600 mt-3">{chat.chat_theme}</p>
+							</div>
+						))
+					) : (
+						<p className="text-center col-span-full text-xl text-gray-700">No chats available</p>
+					)}
+				</div>
 			</div>
-		</div>
+		</section>
 	);
 };
 
