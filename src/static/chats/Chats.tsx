@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import FormToCreateChat from '../../shared/formToCreateChat/FormToCreateChat.tsx';
-import { setUserId, setUserName } from '../../shared/formToLogin/FormToLoginSlice.ts';
-import { setChats, clearChats, setFilterChat } from '../../shared/formToCreateChat/FormToCreateChatSlice.ts';
+import FormToCreateChat from '../../shared/formToCreateChat/FormToCreateChat';
+import { setUserId, setUserName } from '../../shared/formToLogin/FormToLoginSlice';
+import { setChats, clearChats, setFilterChat } from '../../shared/formToCreateChat/FormToCreateChatSlice';
+import SwitchTheme from '../../shared/switchTheme/SwitchTheme';
 
 const Chats: React.FC = () => {
 	const { userName } = useSelector((state: any) => state.login);
 	const { chats, filterChat } = useSelector((state: any) => state.form);
+	const { theme } = useSelector((state: any) => state.theme);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	
@@ -65,25 +67,27 @@ const Chats: React.FC = () => {
 		: [];
 	
 	return (
-		<section className="min-h-screen p-8 bg-gradient-to-br from-indigo-100 via-white to-indigo-300">
+		<section className={`min-h-screen p-8 ${theme === 'light' ? 'bg-gradient-to-br from-indigo-100 via-white to-indigo-300' : 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900'}`}>
 			<div className="container mx-auto max-w-7xl">
-				<h1 className="text-6xl font-bold text-center text-gray-800 mb-12">
+				<h1 className={`text-6xl font-bold text-center ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'} mb-12`}>
 					Hello, {userName}!
 				</h1>
 				
-				<div className="bg-white p-8 rounded-lg shadow-lg mb-12">
+				<SwitchTheme />
+				
+				<div className={`p-8 rounded-lg shadow-lg mb-12 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
 					<FormToCreateChat />
 				</div>
 				
-				<div className="bg-white p-8 rounded-lg shadow-lg mb-12">
-					<label htmlFor="filter-chat" className="block text-xl font-semibold mb-4 text-gray-800">
+				<div className={`p-8 rounded-lg shadow-lg mb-12 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
+					<label htmlFor="filter-chat" className={`block text-xl font-semibold mb-4 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
 						Filter by:
 					</label>
 					<select
 						id="filter-chat"
 						onChange={(e) => dispatch(setFilterChat(e.target.value))}
 						value={filterChat}
-						className="block w-full p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+						className={`block w-full p-4 border ${theme === 'light' ? 'border-gray-300 bg-gray-50 text-gray-900' : 'border-gray-600 bg-gray-700 text-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500`}
 					>
 						<option value="Anime">Anime</option>
 						<option value="Games">Games</option>
@@ -100,14 +104,14 @@ const Chats: React.FC = () => {
 								id={chat.id}
 								key={chat.id}
 								onClick={(e) => onEnterChat(e)}
-								className="p-8 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105 cursor-pointer"
+								className={`p-8 rounded-lg shadow-lg transition-shadow duration-300 transform hover:scale-105 cursor-pointer ${theme === 'light' ? 'bg-white hover:shadow-2xl' : 'bg-gray-800 hover:shadow-lg'}`}
 							>
-								<h2 className="text-3xl font-semibold text-gray-800">{chat.chat_name}</h2>
-								<p className="text-gray-600 mt-3">{chat.chat_theme}</p>
+								<h2 className={`text-3xl font-semibold ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>{chat.chat_name}</h2>
+								<p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'} mt-3`}>{chat.chat_theme}</p>
 							</div>
 						))
 					) : (
-						<p className="text-center col-span-full text-xl text-gray-700">No chats available</p>
+						<p className={`text-center col-span-full text-xl ${theme === 'light' ? 'text-gray-700' : 'text-gray-400'}`}>No chats available</p>
 					)}
 				</div>
 			</div>

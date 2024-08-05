@@ -2,8 +2,9 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import form from '../../shared/formToCreateChat/FormToCreateChatSlice.ts';
 import register from '../../shared/formToRegister/FormToRegisterSlice.ts';
-import login from '../../shared/formToLogin/FormToLoginSlice.ts'
-import admin from '../../shared/chatPageAdmin/chatPageAdminSlice.ts'
+import login from '../../shared/formToLogin/FormToLoginSlice.ts';
+import admin from '../../shared/chatPageAdmin/chatPageAdminSlice.ts';
+import theme from '../../shared/switchTheme/SwitchThemeSlice.ts';
 
 const stringMiddleWare = () => (next) => (action) => {
 	if (typeof action ===   'string') {
@@ -15,7 +16,7 @@ const stringMiddleWare = () => (next) => (action) => {
 };
 
 const store = configureStore({
-	reducer: { form, register, login, admin },
+	reducer: { form, register, login, admin, theme },
 	middleware: (getDefaultMiddleWare) => getDefaultMiddleWare().concat(stringMiddleWare),
 });
 
