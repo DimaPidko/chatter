@@ -1,22 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import FormToCreateChat from '../../shared/formToCreateChat/FormToCreateChat';
 import { setUserId, setUserName } from '../../shared/formToLogin/FormToLoginSlice';
 import { setChats, clearChats, setFilterChat } from '../../shared/formToCreateChat/FormToCreateChatSlice';
 import SwitchTheme from '../../shared/switchTheme/SwitchTheme';
+import { setTheme } from '../../shared/switchTheme/SwitchThemeSlice.ts';
 
 const Chats: React.FC = () => {
 	const { userName } = useSelector((state: any) => state.login);
 	const { chats, filterChat } = useSelector((state: any) => state.form);
 	const { theme } = useSelector((state: any) => state.theme);
+	const [filteredChat, setFilteredChat] = useState<Array<object>>([]);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	
 	useEffect(() => {
+		setFilteredChat(doFilterChat(chats, filterChat));
+	}, [chats, filterChat]);
+	
+	useEffect(() => {
 		fetchChats();
 		autoLogin();
-		
+		dispatch(setTheme(localStorage.getItem('localTheme')));
 		return () => {
 			dispatch(clearChats());
 		};
@@ -62,9 +68,15 @@ const Chats: React.FC = () => {
 		navigate(`/chat/${e.currentTarget.id}`);
 	};
 	
-	const filteredChats = chats.length > 0 && chats[0]
-		? chats[0].filter((chat: any) => chat.chat_theme === filterChat)
-		: [];
+	const doFilterChat = (chats, filterChat) => {
+		if (!Array.isArray(chats) || chats.length === 0) return [];
+		const chatList = Array.isArray(chats[0]) ? chats[0] : [];
+		if (filterChat === 'All') {
+			return chatList;
+		} else {
+			return chatList.filter((chat: any) => chat.chat_theme === filterChat);
+		}
+	};
 	
 	return (
 		<section className={`min-h-screen p-8 ${theme === 'light' ? 'bg-gradient-to-br from-indigo-100 via-white to-indigo-300' : 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900'}`}>
@@ -84,22 +96,23 @@ const Chats: React.FC = () => {
 						Filter by:
 					</label>
 					<select
-						id="filter-chat"
+						id='filter-chat'
 						onChange={(e) => dispatch(setFilterChat(e.target.value))}
 						value={filterChat}
 						className={`block w-full p-4 border ${theme === 'light' ? 'border-gray-300 bg-gray-50 text-gray-900' : 'border-gray-600 bg-gray-700 text-gray-200'} rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500`}
 					>
-						<option value="Anime">Anime</option>
-						<option value="Games">Games</option>
-						<option value="Chatting">Just Chatting</option>
-						<option value="Movies">Movies</option>
-						<option value="Policy">Policy</option>
+						<option value='Anime'>Anime</option>
+						<option value='Games'>Games</option>
+						<option value='Chatting'>Just Chatting</option>
+						<option value='Movies'>Movies</option>
+						<option value='Policy'>Policy</option>
+						<option value='All'>All</option>
 					</select>
 				</div>
 				
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-					{filteredChats.length > 0 ? (
-						filteredChats.map((chat) => (
+					{filteredChat.length > 0 ? (
+						filteredChat.map((chat) => (
 							<div
 								id={chat.id}
 								key={chat.id}
