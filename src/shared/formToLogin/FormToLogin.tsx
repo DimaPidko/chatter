@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserName, setUserId } from "./FormToLoginSlice";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { setTheme } from '../switchTheme/SwitchThemeSlice.ts';
 
 interface LoginFormInputs {
   userName: string;
@@ -21,6 +22,8 @@ const FormToLogin: React.FC = () => {
   
   useEffect(() => {
     login();
+    
+    dispatch(setTheme(localStorage.getItem('localTheme')))
   }, []);
   
   const login = async () => {

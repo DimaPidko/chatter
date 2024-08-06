@@ -9,6 +9,7 @@ const SwitchTheme: React.FC = () => {
 	const onChangeTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		dispatch(setTheme(theme === 'light' ? 'dark' : 'light'));
+		localStorage.setItem('localTheme', theme === 'light' ? 'dark' : 'light');
 	};
 	
 	return (
