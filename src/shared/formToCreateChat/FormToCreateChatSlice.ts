@@ -5,6 +5,7 @@ interface initialState {
 	themeChat: string;
 	privateChat: boolean;
 	chats: Array<any>;
+	filterChat: string;
 }
 
 const initialState = <initialState>{
@@ -12,7 +13,7 @@ const initialState = <initialState>{
 	themeChat: 'Games',
 	privateChat: false,
 	chats: [],
-	filterChat: 'Games',
+	filterChat: 'All',
 }
 
 const FormToCreateChatSlice = createSlice({

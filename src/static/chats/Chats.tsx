@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import FormToCreateChat from '../../shared/formToCreateChat/FormToCreateChat';
 import { setUserId, setUserName } from '../../shared/formToLogin/FormToLoginSlice';
@@ -82,12 +82,12 @@ const Chats: React.FC = () => {
 		<section className={`min-h-screen p-8 ${theme === 'light' ? 'bg-gradient-to-br from-indigo-100 via-white to-indigo-300' : 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900'}`}>
 			<div className="container mx-auto max-w-7xl">
 				<h1 className={`text-6xl font-bold text-center ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'} mb-12`}>
-					Hello, {userName}!
+					Hello, <Link to={`/user/${userName}`} className={'hover:text-orange-600'}>{userName}</Link>!
 				</h1>
 				
 				<SwitchTheme />
 				
-				<div className={`p-8 rounded-lg shadow-lg mb-12 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
+				<div className={`rounded-lg mb-12 ${theme === 'light' ? '' : ''}`}>
 					<FormToCreateChat />
 				</div>
 				

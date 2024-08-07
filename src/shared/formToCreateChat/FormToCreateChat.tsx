@@ -37,7 +37,7 @@ const FormToCreateChat: React.FC = () => {
 	};
 	
 	return (
-		<form onSubmit={onCreateChat} className={`${theme === 'light' ? 'bg-white' : 'bg-gray-800'} p-10 rounded-lg shadow-xl max-w-md mx-auto`}>
+		<form onSubmit={onCreateChat} className={`${theme === 'light' ? 'bg-white' : 'bg-gray-800'} pl-56 pr-56 pt-12 pb-12 rounded-lg shadow-xl mx-auto`}>
 			<h2 className={`${theme === 'light' ? 'text-gray-800' : 'text-gray-100'} text-4xl font-bold mb-8`}>Create a New Chat</h2>
 			<div className="mb-6">
 				<input
@@ -81,12 +81,14 @@ const FormToCreateChat: React.FC = () => {
 				/>
 				<label className={`${theme === 'light' ? 'text-gray-700' : 'text-gray-300'} ml-3 text-lg`}>Private Chat</label>
 			</div>
-			<button
-				type="submit"
-				className={`${theme === 'light' ? 'bg-indigo-600' : 'bg-indigo-700'} w-full py-4 text-white rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-colors duration-300`}
-			>
-				Create Chat
-			</button>
+			<div className="flex justify-center">
+				<button
+					type="submit"
+					className={`${theme === 'light' ? 'bg-indigo-600' : 'bg-indigo-700'} py-4 px-8 text-white rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-colors duration-300`}
+				>
+					Create Chat
+				</button>
+			</div>
 		</form>
 	);
 };
