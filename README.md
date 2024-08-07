@@ -15,7 +15,7 @@ I finally got excited about this work, my friends!!!
 What an incredible thrill I get from writing my “Messenger”
 
 **In developing... 🛀**
-**STACK:** "JS/TS, React. TailWind, react-foorms, react-router-dom, express, mySql"
+**STACK:** "JS/TS, React. TailWind, react-forms, react-router-dom, express, mySql"
 
 **MAIN PAGE**
 ![image](https://github.com/user-attachments/assets/fbd69b20-1444-4005-945e-b662cd6cd89d)
