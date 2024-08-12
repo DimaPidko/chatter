@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUserName, setPassword, resetData } from './FormToRegisterSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import Guid from 'guid';
+import { resetData } from './FormToRegisterSlice.ts';
 
 interface RegisterFormInputs {
   userName: string;
@@ -19,6 +20,7 @@ const FormToRegister: React.FC = () => {
     const { userName, userPassword } = data;
     
     const requestData = {
+      id: Guid.create(),
       userName,
       userPassword,
       registrationDate: new Date().getTime(),
@@ -35,7 +37,7 @@ const FormToRegister: React.FC = () => {
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      dispatch(resetData());
+      // dispatch(resetData());
       navigate('/');
     } catch (error) {
       console.error('Error:', error);

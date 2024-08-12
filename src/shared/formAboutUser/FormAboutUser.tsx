@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import Guid from "guid";
 
 const FormAboutUser : React.FC = ({ props }) => {
 	const { userName, userId } = useSelector((state) => state.login);
+	const { theme } = useSelector((state: any) => state.theme);
+	const guId = Guid.create();
+	
+	useEffect(() => {
+		console.log(guId);
+	}, []);
 	
 	return (
 		<section>

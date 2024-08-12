@@ -205,11 +205,12 @@ app.post('/deleteChat', (req, res) => {
 
 app.post('/register', (req, res) => {
 	try {
-		const { userName, userPassword, registrationDate, lastActivity } = req.body;
+		const { userName, userPassword, registrationDate, lastActivity, id } = req.body;
+		console.log(req.body);
 		
 		connection.query(
-			'INSERT INTO users (user_name, password, registration_date, last_activity) VALUES (?, ?, ?, ?)',
-			[userName, encryptPassword(userPassword), registrationDate, lastActivity],
+			'INSERT INTO users (id, user_name, password, registration_date, last_activity) VALUES (?, ?, ?, ?, ?)',
+			[id, userName, encryptPassword(userPassword), registrationDate, lastActivity],
 			(error) => {
 				if (error) {
 					res.status(500).send(`Error: ${error.message}`);
