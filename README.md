@@ -18,7 +18,7 @@ What an incredible thrill I get from writing my “Messenger”
 **STACK:** "JS/TS, React. TailWind, react-forms, react-router-dom, express, mySql"
 
 **MAIN PAGE**
-![image](https://github.com/user-attachments/assets/fbd69b20-1444-4005-945e-b662cd6cd89d)
+![image](https://github.com/user-attachments/assets/c7d7d7c5-b613-4d9e-ba58-cd3f21e986de)
 
 **CHAT PAGE**
-![image](https://github.com/user-attachments/assets/660bd65a-259b-46a6-83ef-ad8811445aa8)
+![image](https://github.com/user-attachments/assets/901a7ee2-d86f-4d17-a71b-36b5c9f3e4ac)
